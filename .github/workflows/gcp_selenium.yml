@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Run Tests on GCP VM
+    - name: Run Tests and Upload Report from GCP VM
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.GCP_VM_HOST }}
@@ -18,17 +18,16 @@ jobs:
         script: |
           cd selenium-pom-gcp
           git pull origin main
-          mvn clean test          
-          
-    - name: Upload Extent Report and Generate Signed URL
-      run: |
-        echo "${{ secrets.GCP_SIGNER_KEY_BASE64 }}" | base64 -d > gcp-key.json
-        gcloud auth activate-service-account --key-file=gcp-key.json
-        gcloud config set project selenium-testing-lab
+          mvn clean test
 
-        if [ -f test-output/ExtentReport.html ]; then
+          echo "${{ secrets.GCP_SIGNER_KEY_BASE64 }}" | base64 -d > gcp-key.json
+          gcloud auth activate-service-account --key-file=gcp-key.json
+          gcloud config set project selenium-testing-lab
+
+          if [ -f test-output/ExtentReport.html ]; then
             TIMESTAMP=$(date +%Y%m%d-%H%M%S)
             gsutil cp test-output/ExtentReport.html gs://selenium-test-reports/reports/ExtentReport_$TIMESTAMP.html
-        else
-            echo "Report not found"
-        fi
+            echo "Uploaded report: ExtentReport_$TIMESTAMP.html"
+          else
+            echo "Report not found on VM"
+          fi
