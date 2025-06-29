@@ -10,6 +10,7 @@ public class LoginPage {
     By usernameField = By.id("username");
     By passwordField = By.id("password");
     By loginButton   = By.id("submit");
+    By loginMessage  = By.xpath("//div[@class='post-content']//strong");
 
     // Constructor
     public LoginPage(WebDriver driver) {
@@ -33,5 +34,9 @@ public class LoginPage {
         enterUsername(user);
         enterPassword(pass);
         clickLogin();
+    }
+    
+    public String getLoginMessage() {
+    	return driver.findElement(loginMessage).getText();
     }
 }
