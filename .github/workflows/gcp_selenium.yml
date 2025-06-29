@@ -18,6 +18,17 @@ jobs:
         script: |
           cd selenium-pom-gcp
           git pull origin main
-          mvn clean test
-          gsutil cp test-output/ExtentReport.html gs://selenium-test-reports/reports/ExtentReport-${{ github.run_number }}.html
+          mvn clean test          
           
+    - name: Upload Extent Report and Generate Signed URL
+      run: |
+        echo "${{ secrets.GCP_SIGNER_KEY_BASE64 }}" | base64 -d > gcp-key.json
+        gcloud auth activate-service-account --key-file=gcp-key.json
+        gcloud config set project selenium-testing-lab
+
+        if [ -f test-output/ExtentReport.html ]; then
+            TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+            gsutil cp test-output/ExtentReport.html gs://selenium-test-reports/reports/ExtentReport_$TIMESTAMP.html
+        else
+            echo "Report not found"
+        fi
