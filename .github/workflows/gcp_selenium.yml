@@ -1,0 +1,22 @@
+name: Run Selenium Tests in GCP
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Run Tests on GCP VM
+	  uses: appleboy/ssh-action@v1.0.0
+	  with:
+		host: ${{ secrets.GCP_VM_HOST }}
+		username: ${{ secrets.GCP_VM_USER }}
+		key: ${{ secrets.GCP_SSH_KEY }}
+		script: |
+			cd /home/<user>/selenium-project
+			git pull origin main
+			mvn clean test
+			gsutil cp test-output/ExtentReport.html gs://selenium-test-reports/reports/
