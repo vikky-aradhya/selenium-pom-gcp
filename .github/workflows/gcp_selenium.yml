@@ -20,3 +20,4 @@ jobs:
           git pull origin main
           mvn clean test
           gsutil cp test-output/ExtentReport.html gs://selenium-test-reports/reports/ExtentReport-${{ github.run_number }}.html
+          
