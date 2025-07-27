@@ -29,5 +29,5 @@ jobs:
             gsutil cp test-output/ExtentReport.html gs://selenium-test-reports/reports/ExtentReport_$TIMESTAMP.html
             echo "Uploaded report: ExtentReport_$TIMESTAMP.html"
           else
-            echo "Report not found on GCP VM"
+            echo "Report not found on GCP VM 1"
           fi
