@@ -1,6 +1,11 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="Selenium POM Suite">
+<suite name="Selenium POM Suite" thread-count="2" parallel="tests">
     <test name="Login Test">
+        <classes>
+            <class name="tests.LoginTest"/>
+        </classes>
+    </test>
+    <test name="Login Test New">
         <classes>
             <class name="tests.LoginTest"/>
         </classes>
